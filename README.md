@@ -1,2 +1,2 @@
 # Terminal-Cities-Engine
-Designed Only for Terminal Cities
+A Game Engine Designed Only for Terminal Cities
