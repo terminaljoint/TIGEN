@@ -1,9 +1,10 @@
 :root{
-  --bg:#0b0c0e;
-  --panel:#111;
-  --border:#222;
   --accent:#00ff88;
-  --text:#eaeaea;
+  --bg:#0b0c0e;
+  --panel:#15171a;
+  --border:#2a2d32;
+  --text:#ececed;
+  --danger:#ff4d4d;
 }
 
 *{box-sizing:border-box}
@@ -17,25 +18,55 @@ body{
   overflow:hidden;
 }
 
-#app{
+.layout{
   display:grid;
-  grid-template-rows:42px 1fr;
+  grid-template-columns:280px 1fr 340px;
+  grid-template-rows:45px 1fr;
   height:100vh;
 }
 
 header{
+  grid-column:1/4;
   background:#000;
-  border-bottom:1px solid var(--border);
   display:flex;
   align-items:center;
-  padding:0 16px;
+  justify-content:space-between;
+  padding:0 15px;
+  border-bottom:1px solid var(--border);
 }
 
-header span{
-  color:var(--accent);
+.logo{font-weight:900;color:var(--accent)}
+.logo span{color:#555;font-weight:400}
+
+.panel{background:var(--panel);border-right:1px solid var(--border)}
+.panel-h{
+  padding:10px 15px;
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
 }
 
-#viewport{
-  background:#111;
+#vp{background:#111;outline:none}
+.inspector{border-left:1px solid var(--border)}
+
+button{
+  background:#2a2d32;
+  color:#fff;
+  border:1px solid #3a3d42;
+  padding:6px 12px;
+  border-radius:4px;
+  cursor:pointer;
+  font-size:11px;
 }
 
+button:hover{border-color:var(--accent)}
+
+.play-btn{
+  background:var(--accent);
+  color:#000;
+  border:none;
+  font-weight:900;
+}
