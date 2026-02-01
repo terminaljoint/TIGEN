@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TIGEN – A lightweight, modular 3D/WebGL game engine for web creators with PBR rendering, physics, audio, and more.">
+  <title>TIGEN – Modular Web 3D Engine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b0c0e;
+      color: #ececed;
+      line-height: 1.6;
+    }
+
+    a {
+      color: #00ff88;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+
+    /* Header & Navigation */
+    header {
+      background: rgba(0, 0, 0, 0.95);
+      border-bottom: 1px solid #2a2d32;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 20px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 60px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 900;
+      color: #00ff88;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo span {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: #ececed;
+    }
+
+    .nav-links a:hover {
+      color: #00ff88;
+    }
+
+    .cta-btn {
+      background: #00ff88;
+      color: #0b0c0e;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(15, 17, 20, 0.9)), 
+                  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="%23333" stroke-width="0.5"/></pattern></defs><rect width="1200" height="600" fill="%230b0c0e"/><rect width="1200" height="600" fill="url(%23grid)"/></svg>');
+      background-size: cover;
+      background-position: center;
+      padding: 100px 20px;
+      text-align: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-content h1 {
+      font-size: 48px;
+      font-weight: 900;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .hero-content h1 span {
+      color: #00ff88;
+    }
+
+    .hero-content .tagline {
+      font-size: 20px;
+      color: #aaa;
+      margin-bottom: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid #00ff88;
+      color: #00ff88;
+      padding: 12px 28px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #00ff88;
+      color: #0b0c0e;
+    }
+
+    /* Features Section */
+    .features {
+      max-width: 1200px;
+      margin: 100px auto;
+      padding: 0 20px;
+    }
+
+    .section-title {
+      font-size: 36px;
+      font-weight: 900;
+      margin-bottom: 50px;
+      text-align: center;
+    }
+
+    .section-title span {
+      color: #00ff88;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 40px;
+      margin-bottom: 80px;
+    }
+
+    .feature-card {
+      background: #15171a;
+      border: 1px solid #2a2d32;
+      padding: 30px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: #00ff88;
+      background: rgba(0, 255, 136, 0.05);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #00ff88;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    /* Quick Start Section */
+    .quick-start {
+      background: #15171a;
+      border: 1px solid #2a2d32;
+      max-width: 1200px;
+      margin: 100px auto;
+      padding: 50px;
+      border-radius: 8px;
+    }
+
+    .quick-start h2 {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 30px;
+    }
+
+    .quick-start h2 span {
+      color: #00ff88;
+    }
+
+    .code-block {
+      background: #0b0c0e;
+      border: 1px solid #2a2d32;
+      padding: 20px;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin-bottom: 20px;
+    }
+
+    .code-block code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #00ff88;
+      line-height: 1.6;
+    }
+
+    .code-block .keyword {
+      color: #ff79c6;
+    }
+
+    .code-block .class {
+      color: #8be9fd;
+    }
+
+    /* Demo Section */
+    .demo-section {
+      max-width: 1200px;
+      margin: 100px auto;
+      padding: 0 20px;
+    }
+
+    .demo-container {
+      background: #15171a;
+      border: 1px solid #2a2d32;
+      border-radius: 8px;
+      overflow: hidden;
+      height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .demo-placeholder {
+      text-align: center;
+      color: #666;
+    }
+
+    .demo-placeholder p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .play-icon {
+      display: inline-block;
+      width: 60px;
+      height: 60px;
+      background: rgba(0, 255, 136, 0.2);
+      border: 2px solid #00ff88;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .play-icon:hover {
+      background: rgba(0, 255, 136, 0.3);
+      transform: scale(1.1);
+    }
+
+    /* Docs & Examples */
+    .resources {
+      max-width: 1200px;
+      margin: 100px auto;
+      padding: 0 20px;
+    }
+
+    .resources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .resource-card {
+      background: #15171a;
+      border: 1px solid #2a2d32;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .resource-card:hover {
+      border-color: #00ff88;
+      background: rgba(0, 255, 136, 0.05);
+    }
+
+    .resource-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .resource-card p {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 20px;
+    }
+
+    .resource-card a {
+      display: inline-block;
+      background: #00ff88;
+      color: #0b0c0e;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .resource-card a:hover {
+      opacity: 0.9;
+    }
+
+    /* Stats Section */
+    .stats {
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(15, 17, 20, 0.8));
+      border-top: 1px solid #2a2d32;
+      border-bottom: 1px solid #2a2d32;
+      padding: 60px 20px;
+      margin: 80px 0;
+    }
+
+    .stats-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      text-align: center;
+    }
+
+    .stat-item h4 {
+      font-size: 32px;
+      color: #00ff88;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .stat-item p {
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    /* Footer */
+    footer {
+      background: #000;
+      border-top: 1px solid #2a2d32;
+      padding: 40px 20px;
+      text-align: center;
+      color: #666;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+    }
+
+    .footer-links a:hover {
+      color: #00ff88;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links {
+        gap: 15px;
+      }
+
+      .hero-content h1 {
+        font-size: 32px;
+      }
+
+      .hero-content .tagline {
+        font-size: 16px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .quick-start {
+        padding: 30px;
+      }
+
+      .demo-container {
+        height: 300px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      nav {
+        flex-direction: column;
+        height: auto;
+        padding: 15px 0;
+        gap: 15px;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+
+      .hero {
+        padding: 60px 20px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+      }
+
+      .cta-btn,
+      .btn-secondary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <nav>
+    <div class="logo">
+      TIGEN <span>v2</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#quick-start">Quick Start</a></li>
+      <li><a href="#resources">Docs & Examples</a></li>
+      <li><a href="https://github.com/terminaljoint/TIGEN" target="_blank">GitHub</a></li>
+      <li><a href="https://terminaljoint.github.io/TIGEN/sandbox/" target="_blank" class="cta-btn">Try Sandbox →</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1><span>TIGEN</span> — Modular Web 3D Engine</h1>
+    <p class="tagline">Lightweight, powerful engine for web creators. PBR rendering, physics, spatial audio, and an intuitive entity-component system.</p>
+    <div class="hero-buttons">
+      <a href="#quick-start" class="cta-btn">Get Started</a>
+      <a href="https://github.com/terminaljoint/TIGEN" target="_blank" class="btn-secondary">View on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features" id="features">
+  <h2 class="section-title">Core <span>Features</span></h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🎨</div>
+      <h3>PBR Renderer</h3>
+      <p>Physically-based rendering with metallic, roughness, and normal mapping. Realistic materials and dynamic shadows.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚙️</div>
+      <h3>Physics Engine</h3>
+      <p>Fixed-timestep physics simulation with AABB collisions, rigid bodies, gravity, and friction.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔊</div>
+      <h3>Spatial Audio</h3>
+      <p>3D positional audio with distance attenuation, doppler effects, and Web Audio API integration.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✨</div>
+      <h3>Particle System</h3>
+      <p>GPU-accelerated particles with emission, velocity, lifetime, and custom material properties.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎬</div>
+      <h3>Animation System</h3>
+      <p>Skeletal animation support with blending, playback control, and timeline-based sequencing.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎮</div>
+      <h3>Entity-Component System</h3>
+      <p>Flexible ECS architecture for building complex game logic and scenes with reusable components.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛠️</div>
+      <h3>Developer Tools</h3>
+      <p>Built-in inspector, hierarchy view, transform gizmos, real-time debugging, and scene editor.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <h3>Asset Pipeline</h3>
+      <p>Support for glTF/GLB models, textures, materials, and automatic asset management system.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats">
+  <div class="stats-container">
+    <div class="stat-item">
+      <h4>8+</h4>
+      <p>Core Systems</p>
+    </div>
+    <div class="stat-item">
+      <h4>100%</h4>
+      <p>Web-Based</p>
+    </div>
+    <div class="stat-item">
+      <h4>AAA</h4>
+      <p>Quality Rendering</p>
+    </div>
+    <div class="stat-item">
+      <h4>Open Source</h4>
+      <p>MIT License</p>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Start Section -->
+<section class="quick-start" id="quick-start">
+  <h2><span>Quick Start</span></h2>
+  
+  <p style="color: #aaa; margin-bottom: 30px;">Get TIGEN running in seconds.</p>
+
+  <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; margin-top: 30px;">1. Clone the Repository</h3>
+  <div class="code-block">
+    <code>$ git clone https://github.com/terminaljoint/TIGEN.git<br>$ cd TIGEN</code>
+  </div>
+
+  <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; margin-top: 30px;">2. Start a Local Server</h3>
+  <div class="code-block">
+    <code>$ python3 -m http.server 8000</code>
+  </div>
+
+  <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; margin-top: 30px;">3. Open in Browser</h3>
+  <div class="code-block">
+    <code>http://localhost:8000</code>
+  </div>
+
+  <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; margin-top: 30px;">4. Basic Usage</h3>
+  <div class="code-block">
+    <code><span class="keyword">import</span> { <span class="class">Engine</span> } <span class="keyword">from</span> <span class="class">'./main.js'</span>;<br><br><span class="keyword">const</span> engine = <span class="keyword">new</span> <span class="class">Engine</span>();<br>engine.<span class="class">run</span>();</code>
+  </div>
+
+  <p style="color: #aaa; margin-top: 30px; font-size: 13px;">For detailed documentation, see <a href="https://github.com/terminaljoint/TIGEN#documentation" target="_blank" style="color: #00ff88;">the full README →</a></p>
+</section>
+
+<!-- Demo Section -->
+<section class="demo-section">
+  <h2 class="section-title">Try the <span>Sandbox</span></h2>
+  <div class="demo-container">
+    <div class="demo-placeholder">
+      <div class="play-icon">▶</div>
+      <p style="margin-top: 20px;">Interactive 3D Editor & Sandbox</p>
+      <p style="font-size: 13px; color: #666;">Click to enter the full TIGEN sandbox environment</p>
+      <a href="https://terminaljoint.github.io/TIGEN/sandbox/" target="_blank" class="cta-btn" style="display: inline-block; margin-top: 15px;">Enter Sandbox</a>
+    </div>
+  </div>
+</section>
+
+<!-- Resources Section -->
+<section class="resources" id="resources">
+  <h2 class="section-title">Docs & <span>Resources</span></h2>
+  <div class="resources-grid">
+    <div class="resource-card">
+      <h3>📖 API Reference</h3>
+      <p>Complete API documentation with examples for all TIGEN systems and components.</p>
+      <a href="https://github.com/terminaljoint/TIGEN/blob/main/API_REFERENCE.md" target="_blank">Read Docs</a>
+    </div>
+    <div class="resource-card">
+      <h3>🎓 Tutorials</h3>
+      <p>Step-by-step guides to help you master TIGEN and build 3D web projects.</p>
+      <a href="https://github.com/terminaljoint/TIGEN/blob/main/TUTORIAL.md" target="_blank">View Tutorials</a>
+    </div>
+    <div class="resource-card">
+      <h3>💡 Examples</h3>
+      <p>Sample projects and code snippets demonstrating TIGEN's capabilities.</p>
+      <a href="https://github.com/terminaljoint/TIGEN/blob/main/EXAMPLES.md" target="_blank">See Examples</a>
+    </div>
+    <div class="resource-card">
+      <h3>🚀 Quick Reference</h3>
+      <p>Cheat sheet with essential TIGEN functions, properties, and patterns.</p>
+      <a href="https://github.com/terminaljoint/TIGEN/blob/main/QUICK_REFERENCE.md" target="_blank">Quick Ref</a>
+    </div>
+    <div class="resource-card">
+      <h3>📝 Getting Started</h3>
+      <p>New to TIGEN? Start here with an overview and basic setup instructions.</p>
+      <a href="https://github.com/terminaljoint/TIGEN/blob/main/START_HERE.md" target="_blank">Get Started</a>
+    </div>
+    <div class="resource-card">
+      <h3>🛠️ Implementation</h3>
+      <p>Technical deep-dive into TIGEN's architecture and design decisions.</p>
+      <a href="https://github.com/terminaljoint/TIGEN/blob/main/IMPLEMENTATION_SUMMARY.md" target="_blank">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-links">
+      <a href="https://github.com/terminaljoint/TIGEN" target="_blank">GitHub</a>
+      <a href="https://github.com/terminaljoint/TIGEN/issues" target="_blank">Report Issues</a>
+      <a href="https://github.com/terminaljoint/TIGEN/blob/main/LICENSE" target="_blank">License</a>
+      <a href="https://github.com/terminaljoint" target="_blank">Author</a>
+    </div>
+    <p>&copy; 2026 TIGEN. Open Source. MIT License.</p>
+  </div>
+</footer>
+
+</body>
+</html>
