@@ -2,52 +2,692 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TIGEN v2 | Advanced AAA Game Engine</title>
+  <title>TIGEN v2 | Live 3D Engine</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0b0d;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #vp {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    /* ===== OVERLAY UI ===== */
+    #ui-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.85);
+      border-bottom: 2px solid #00ff88;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      pointer-events: auto;
+      z-index: 1001;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: #00ff88;
+    }
+
+    .logo span {
+      font-size: 10px;
+      color: #666;
+      margin-left: 5px;
+    }
+
+    .top-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* Buttons */
+    button {
+      background: rgba(255, 255, 255, 0.1);
+      color: #00ff88;
+      border: 1px solid #00ff88;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+      pointer-events: auto;
+    }
+
+    button:hover {
+      background: rgba(0, 255, 136, 0.2);
+      box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    }
+
+    button:active {
+      background: rgba(0, 255, 136, 0.4);
+    }
+
+    /* Docs Panel */
+    #docsPanel {
+      position: fixed;
+      top: 50px;
+      right: 0;
+      width: 400px;
+      max-height: calc(100vh - 50px);
+      background: rgba(10, 11, 14, 0.95);
+      border: 2px solid #2a2d32;
+      border-top: none;
+      border-right: none;
+      overflow-y: auto;
+      pointer-events: auto;
+      z-index: 1000;
+      animation: slideIn 0.3s ease-out;
+      backdrop-filter: blur(10px);
+    }
+
+    #docsPanel[hidden] {
+      display: none;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .docs-header {
+      padding: 20px;
+      border-bottom: 1px solid #2a2d32;
+      position: sticky;
+      top: 0;
+      background: rgba(10, 11, 14, 0.98);
+    }
+
+    .docs-header h2 {
+      color: #00ff88;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .docs-header p {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .docs-content {
+      padding: 20px;
+      color: #ececed;
+    }
+
+    .docs-section {
+      margin-bottom: 30px;
+    }
+
+    .docs-section h3 {
+      color: #00ff88;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .docs-section p {
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .docs-code {
+      background: rgba(0, 0, 0, 0.5);
+      border-left: 2px solid #00ff88;
+      padding: 10px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #00ff88;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .docs-list {
+      font-size: 12px;
+      color: #aaa;
+      margin-left: 15px;
+    }
+
+    .docs-list li {
+      margin-bottom: 6px;
+    }
+
+    .docs-list li strong {
+      color: #00ff88;
+    }
+
+    .docs-list a {
+      color: #00ff88;
+      text-decoration: none;
+    }
+
+    .docs-list a:hover {
+      text-decoration: underline;
+    }
+
+    /* Scrollbar */
+    #docsPanel::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #docsPanel::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #docsPanel::-webkit-scrollbar-thumb {
+      background: #2a2d32;
+      border-radius: 3px;
+    }
+
+    #docsPanel::-webkit-scrollbar-thumb:hover {
+      background: #3a3d42;
+    }
+
+    /* Status Display */
+    .status {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #00ff88;
+      padding: 10px 15px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #00ff88;
+      pointer-events: auto;
+      z-index: 999;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #00ff88;
+      border-radius: 50%;
+      margin-right: 5px;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Hide original UI elements - keep them for engine compatibility */
+    .layout, header, aside, main, .play-overlay, .panel, .inspector, .play-btn, #play-btn, #clear-btn, #hierarchy, #ins-root, #ins-none {
+      pointer-events: auto;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      #docsPanel {
+        width: 100%;
+        right: 0;
+      }
+
+      .top-controls {
+        gap: 5px;
+      }
+
+      button {
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+    }
+  </style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #000;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #tigen-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    #ui {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.8);
+      border-bottom: 2px solid #00ff88;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      pointer-events: auto;
+      z-index: 1001;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: #00ff88;
+    }
+
+    .logo span {
+      font-size: 10px;
+      color: #666;
+      margin-left: 5px;
+    }
+
+    .top-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* Buttons */
+    button {
+      background: rgba(255, 255, 255, 0.1);
+      color: #00ff88;
+      border: 1px solid #00ff88;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+      pointer-events: auto;
+    }
+
+    button:hover {
+      background: rgba(0, 255, 136, 0.2);
+      box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    }
+
+    button:active {
+      background: rgba(0, 255, 136, 0.4);
+    }
+
+    /* Docs Panel */
+    #docsPanel {
+      position: fixed;
+      top: 50px;
+      right: 0;
+      width: 400px;
+      max-height: calc(100vh - 50px);
+      background: rgba(10, 11, 14, 0.95);
+      border: 2px solid #2a2d32;
+      border-top: none;
+      border-right: none;
+      overflow-y: auto;
+      pointer-events: auto;
+      z-index: 1000;
+      animation: slideIn 0.3s ease-out;
+      backdrop-filter: blur(10px);
+    }
+
+    #docsPanel[hidden] {
+      display: none;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .docs-header {
+      padding: 20px;
+      border-bottom: 1px solid #2a2d32;
+      position: sticky;
+      top: 0;
+      background: rgba(10, 11, 14, 0.98);
+    }
+
+    .docs-header h2 {
+      color: #00ff88;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .docs-header p {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .docs-content {
+      padding: 20px;
+      color: #ececed;
+    }
+
+    .docs-section {
+      margin-bottom: 30px;
+    }
+
+    .docs-section h3 {
+      color: #00ff88;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .docs-section p {
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .docs-code {
+      background: rgba(0, 0, 0, 0.5);
+      border-left: 2px solid #00ff88;
+      padding: 10px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #00ff88;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .docs-list {
+      font-size: 12px;
+      color: #aaa;
+      margin-left: 15px;
+    }
+
+    .docs-list li {
+      margin-bottom: 6px;
+    }
+
+    .docs-list li strong {
+      color: #00ff88;
+    }
+
+    /* Scrollbar */
+    #docsPanel::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #docsPanel::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #docsPanel::-webkit-scrollbar-thumb {
+      background: #2a2d32;
+      border-radius: 3px;
+    }
+
+    #docsPanel::-webkit-scrollbar-thumb:hover {
+      background: #3a3d42;
+    }
+
+    /* Status Display */
+    .status {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #00ff88;
+      padding: 10px 15px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #00ff88;
+      pointer-events: auto;
+      z-index: 999;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #00ff88;
+      border-radius: 50%;
+      margin-right: 5px;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      #docsPanel {
+        width: 100%;
+        right: 0;
+      }
+
+      .top-controls {
+        gap: 5px;
+      }
+
+      button {
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<div class="play-overlay" id="play-ui">
-  <div class="dot"></div>
-  <b>SANDBOX ACTIVE</b>
-  <span>| WASD Move | Q/E Up/Down | Shift Sprint | F12 Debug | Delete Entity</span>
-</div>
+<!-- ===== ENGINE VIEWPORT ===== -->
+<main id="vp" tabindex="0"></main>
 
-<div class="layout">
-  <header>
+<!-- ===== OVERLAY UI ===== -->
+<div id="ui-overlay">
+  <!-- Top Bar -->
+  <div class="top-bar">
     <div class="logo">TIGEN <span>v2</span></div>
-    <button class="play-btn" id="play-btn">ENTER GAMEWORLD</button>
-    <div>
-      <span class="autosave">AUTO-SAVE: ON</span>
-      <button id="clear-btn">Clear World</button>
+    <div class="top-controls">
+      <button id="toggleDocs">📖 Docs</button>
+      <button id="toggleEditor">🎮 Editor</button>
+      <button id="resetCamera">🏠 Reset</button>
     </div>
-  </header>
+  </div>
 
-  <aside class="panel">
-    <div class="panel-h">Outliner <button id="add-box">+</button></div>
-    <div id="hierarchy"></div>
-  </aside>
+  <!-- Documentation Panel -->
+  <div id="docsPanel" hidden>
+    <div class="docs-header">
+      <h2>TIGEN v2</h2>
+      <p>Live 3D Engine Documentation</p>
+    </div>
 
-  <main id="vp" tabindex="0"></main>
+    <div class="docs-content">
+      <!-- Getting Started -->
+      <div class="docs-section">
+        <h3>🚀 Getting Started</h3>
+        <p>TIGEN is a lightweight 3D engine running directly in your browser. The engine initializes automatically on page load.</p>
+        <p><strong>Current Features:</strong></p>
+        <ul class="docs-list">
+          <li><strong>ECS System:</strong> Entity-Component-System architecture</li>
+          <li><strong>3D Rendering:</strong> PBR materials with dynamic lighting</li>
+          <li><strong>Physics:</strong> Gravity, collisions, rigid bodies</li>
+          <li><strong>Assets:</strong> Load models and textures</li>
+          <li><strong>Input:</strong> Keyboard, mouse, gamepad support</li>
+        </ul>
+      </div>
 
-  <aside class="inspector panel">
-    <div class="panel-h">Entity Inspector</div>
-    <div id="ins-root"></div>
-    <div id="ins-none">Select an object in the world to edit</div>
-  </aside>
+      <!-- Quick Start -->
+      <div class="docs-section">
+        <h3>⚡ Quick Start</h3>
+        <p>Open the browser console (F12) and try these commands:</p>
+
+        <p><strong>Create an Entity:</strong></p>
+        <div class="docs-code">
+const cube = TIGEN.createEntity("MyCube");<br>
+const mesh = cube.addComponent(TIGEN.Mesh);<br>
+mesh.setGeometry('box');<br>
+mesh.setMaterial('standard', { color: 0xff0000 });
+        </div>
+
+        <p><strong>Add Physics:</strong></p>
+        <div class="docs-code">
+const physics = cube.addComponent(TIGEN.Physics);<br>
+physics.mass = 1;<br>
+physics.useGravity = true;<br>
+TIGEN.loop.physicsEngine.registerBody(physics);
+        </div>
+
+        <p><strong>Load a Model:</strong></p>
+        <div class="docs-code">
+TIGEN.loadModel('models/model.glb')<br>
+  .then(gltf => {<br>
+&nbsp;&nbsp;TIGEN.scene.add(gltf.scene);<br>
+  });
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="docs-section">
+        <h3>🎮 Controls</h3>
+        <ul class="docs-list">
+          <li><strong>Middle Mouse + Drag:</strong> Rotate camera</li>
+          <li><strong>Scroll Wheel:</strong> Zoom in/out</li>
+          <li><strong>Right Click + Drag:</strong> Pan camera</li>
+          <li><strong>F12:</strong> Open console for commands</li>
+        </ul>
+      </div>
+
+      <!-- Global API -->
+      <div class="docs-section">
+        <h3>💻 Global API</h3>
+        <p><strong>Scene & Entities:</strong></p>
+        <div class="docs-code">
+TIGEN.scene<br>
+TIGEN.createEntity(name)<br>
+TIGEN.scene.removeEntity(entity)
+        </div>
+
+        <p><strong>Components:</strong></p>
+        <div class="docs-code">
+TIGEN.Mesh<br>
+TIGEN.Physics<br>
+TIGEN.Light<br>
+TIGEN.Camera
+        </div>
+
+        <p><strong>Transform:</strong></p>
+        <div class="docs-code">
+entity.transform.setPosition(x, y, z)<br>
+entity.transform.setRotation(x, y, z)<br>
+entity.transform.setScale(x, y, z)
+        </div>
+
+        <p><strong>Asset Loading:</strong></p>
+        <div class="docs-code">
+TIGEN.loadModel(url)<br>
+TIGEN.loadTexture(url)
+        </div>
+
+        <p><strong>Input:</strong></p>
+        <div class="docs-code">
+TIGEN.Input.isKeyDown(code)<br>
+TIGEN.Input.getMousePosition()
+        </div>
+      </div>
+
+      <!-- File Structure -->
+      <div class="docs-section">
+        <h3>📁 Asset Paths</h3>
+        <p>Place assets in these directories (relative to TIGEN/):</p>
+        <div class="docs-code">
+models/          ← 3D models (glTF/GLB)<br>
+textures/        ← Images (PNG/JPG)<br>
+sounds/          ← Audio files (OGG/MP3)
+        </div>
+      </div>
+
+      <!-- Help -->
+      <div class="docs-section">
+        <h3>❓ Help & Resources</h3>
+        <ul class="docs-list">
+          <li><a href="https://github.com/terminaljoint/TIGEN" target="_blank">GitHub Repository</a></li>
+          <li><a href="https://terminaljoint.github.io/TIGEN/docs-getting-started.html" target="_blank">Full Documentation</a></li>
+          <li><a href="https://terminaljoint.github.io/TIGEN/docs-api.html" target="_blank">API Reference</a></li>
+          <li><strong>Open Console (F12)</strong> to see engine logs and run commands</li>
+        </ul>
+      </div>
+
+      <div style="height: 20px;"></div>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="status">
+    <span class="status-dot"></span><span id="statusText">Engine Running</span>
+  </div>
 </div>
 
-<!-- THREE.JS & Extensions -->
+<!-- THREE.JS from CDN -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.145/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/controls/TransformControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/postprocessing/BloomPass.js"></script>
 
 <!-- TIGEN CORE ENGINE -->
 <script src="ecs.js"></script>
@@ -64,14 +704,114 @@
 <script src="input.js"></script>
 <script src="loop.js"></script>
 <script src="editor.js"></script>
+<script src="inspector.js"></script>
 <script src="main.js"></script>
 
-</body>
-</html>
-<script src="inspector.js"></script>
-<script src="editor.js"></script>
-<script src="loop.js"></script>
-<script src="main.js"></script>
+<!-- Engine Auto-Start & UI Controller -->
+<script>
+// ============================================================================
+// UI CONTROLLER (Independent of Engine)
+// ============================================================================
+
+const UIController = {
+  docsPanel: null,
+  toggleDocsBtn: null,
+  toggleEditorBtn: null,
+  resetCameraBtn: null,
+  statusText: null,
+
+  init() {
+    this.docsPanel = document.getElementById('docsPanel');
+    this.toggleDocsBtn = document.getElementById('toggleDocs');
+    this.toggleEditorBtn = document.getElementById('toggleEditor');
+    this.resetCameraBtn = document.getElementById('resetCamera');
+    this.statusText = document.getElementById('statusText');
+
+    this.attachEventListeners();
+  },
+
+  attachEventListeners() {
+    // Docs Toggle
+    this.toggleDocsBtn?.addEventListener('click', () => {
+      const isHidden = this.docsPanel.hasAttribute('hidden');
+      if (isHidden) {
+        this.docsPanel.removeAttribute('hidden');
+        this.toggleDocsBtn.style.background = 'rgba(0, 255, 136, 0.3)';
+        this.toggleDocsBtn.style.boxShadow = '0 0 15px rgba(0, 255, 136, 0.6)';
+      } else {
+        this.docsPanel.setAttribute('hidden', '');
+        this.toggleDocsBtn.style.background = '';
+        this.toggleDocsBtn.style.boxShadow = '';
+      }
+    });
+
+    // Editor Toggle
+    this.toggleEditorBtn?.addEventListener('click', () => {
+      if (TIGEN.editor && TIGEN.editor.togglePlayMode) {
+        TIGEN.editor.togglePlayMode();
+        this.updateEditorButton();
+      }
+    });
+
+    // Reset Camera
+    this.resetCameraBtn?.addEventListener('click', () => {
+      if (TIGEN.editor && TIGEN.editor.renderer && TIGEN.editor.renderer.camera) {
+        const camera = TIGEN.editor.renderer.camera;
+        camera.position.set(20, 20, 20);
+        camera.lookAt(0, 0, 0);
+        if (TIGEN.editor.orbitControls) {
+          TIGEN.editor.orbitControls.target.set(0, 0, 0);
+          TIGEN.editor.orbitControls.update();
+        }
+      }
+    });
+  },
+
+  updateEditorButton() {
+    if (TIGEN.editor?.playMode) {
+      this.toggleEditorBtn.textContent = '⏹ Stop';
+      this.toggleEditorBtn.style.background = 'rgba(255, 77, 77, 0.3)';
+    } else {
+      this.toggleEditorBtn.textContent = '🎮 Editor';
+      this.toggleEditorBtn.style.background = '';
+    }
+  }
+};
+
+// Initialize UI when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  UIController.init();
+  console.log("✓ UI Controller initialized");
+});
+
+// ============================================================================
+// CONSOLE HELP
+// ============================================================================
+
+window.addEventListener('load', () => {
+  console.log(`
+╔════════════════════════════════════════════════════════════════╗
+║                    TIGEN v2 Engine Initialized                ║
+╚════════════════════════════════════════════════════════════════╝
+
+🎮 QUICK COMMANDS:
+  TIGEN.createEntity(name)    - Create new entity
+  TIGEN.scene.entities        - List all entities
+  TIGEN.loadModel(url)        - Load 3D model
+  TIGEN.Input.isKeyDown(code) - Check input
+
+📖 DOCUMENTATION: Click "Docs" button in top-right
+🎮 EDITOR CONTROLS: Middle-mouse drag to rotate camera
+💡 TIPS: Open this console to run commands!
+
+Examples:
+  const cube = TIGEN.createEntity("Cube");
+  const mesh = cube.addComponent(TIGEN.Mesh);
+  mesh.setGeometry('box');
+  mesh.setMaterial('standard', { color: 0x00ff88 });
+  `);
+});
+</script>
 
 </body>
 </html>
