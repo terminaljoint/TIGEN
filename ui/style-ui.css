@@ -1,0 +1,19 @@
+/* TIGEN GUI - Minimal modern UI styles */
+:root{
+  --bg:#0b0c0e; --panel:#111214; --accent:#00ff88; --muted:#888;
+}
+#tigen-gui-root{position:fixed;inset:50px 20px 20px 20px;pointer-events:auto;display:flex;gap:12px;z-index:1100;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+.gui-left,.gui-right{width:320px;background:linear-gradient(180deg,var(--panel),#0a0b0d);border:1px solid rgba(255,255,255,0.04);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.gui-bottom{height:180px;flex:1;background:linear-gradient(180deg,var(--panel),#0a0b0d);border:1px solid rgba(255,255,255,0.04);border-radius:8px;overflow:auto}
+.gui-header{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.02);font-weight:700;color:var(--accent)}
+.gui-body{padding:10px;flex:1;overflow:auto;color:#ddd;font-size:13px}
+.outline-item{padding:6px 8px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.outline-item:hover{background:rgba(0,255,136,0.03);cursor:pointer}
+.outline-item.selected{background:rgba(0,255,136,0.08)}
+.inspector-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.inspector-row label{width:70px;color:var(--muted);font-size:12px}
+.inspector-row input{flex:1;background:#0c0d0f;border:1px solid rgba(255,255,255,0.04);padding:6px;border-radius:4px;color:#fff}
+.asset-thumb{width:64px;height:64px;background:#0b0c0e;border:1px solid rgba(255,255,255,0.03);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);margin:6px}
+.assets-grid{display:flex;flex-wrap:wrap}
+.small-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--accent);padding:6px 8px;border-radius:6px;cursor:pointer}
+.gui-controls{display:flex;gap:8px;padding:8px}
