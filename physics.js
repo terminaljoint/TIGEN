@@ -18,12 +18,12 @@ class Physics extends Component {
   }
 
   applyForce(force) {
-    if (this.isKinematic) return;
+    if (this.isKinematic || this.mass <= 0) return;
     this.acceleration.add(force.divideScalar(this.mass));
   }
 
   applyImpulse(impulse) {
-    if (this.isKinematic) return;
+    if (this.isKinematic || this.mass <= 0) return;
     this.velocity.add(impulse.divideScalar(this.mass));
   }
 
@@ -160,12 +160,19 @@ class PhysicsEngine {
     const vel2 = body2.velocity.clone();
 
     const relVel = vel1.sub(vel2);
+    
+    // Calculate inverse masses (0 for infinite mass/kinematic)
+    const invMass1 = body1.isKinematic || body1.mass <= 0 ? 0 : 1 / body1.mass;
+    const invMass2 = body2.isKinematic || body2.mass <= 0 ? 0 : 1 / body2.mass;
+
+    if (invMass1 + invMass2 === 0) return;
+
     const restitution = Math.min(body1.restitution, body2.restitution);
 
-    // Simple elastic collision resolution
-    const impulse = relVel.multiplyScalar(1 + restitution);
+    // Calculate impulse scalar
+    const impulse = relVel.multiplyScalar(1 + restitution).divideScalar(invMass1 + invMass2);
 
-    if (!body1.isKinematic) body1.velocity.sub(impulse.clone().multiplyScalar(1 / body1.mass));
-    if (!body2.isKinematic) body2.velocity.add(impulse.clone().multiplyScalar(1 / body2.mass));
+    if (!body1.isKinematic) body1.velocity.sub(impulse.clone().multiplyScalar(invMass1));
+    if (!body2.isKinematic) body2.velocity.add(impulse.clone().multiplyScalar(invMass2));
   }
 }

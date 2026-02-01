@@ -25,6 +25,7 @@ class Script extends Component {
   onCollisionStay(other) {} // Collision ongoing
   onCollisionExit(other) {} // Collision ended
   onDestroy() {
+    this.isRunning = false;
     TIGEN_ScriptManager.removeScript(this);
   } // Called on script removal
 }
@@ -142,7 +143,7 @@ class ScriptManager {
   }
 
   update(dt) {
-    this.updateOrder.forEach(script => {
+    [...this.updateOrder].forEach(script => {
       if (script.isRunning && script.onUpdate) {
         script.onUpdate(dt);
       }
@@ -150,7 +151,7 @@ class ScriptManager {
   }
 
   lateUpdate(dt) {
-    this.updateOrder.forEach(script => {
+    [...this.updateOrder].forEach(script => {
       if (script.isRunning && script.onLateUpdate) {
         script.onLateUpdate(dt);
       }
@@ -158,7 +159,7 @@ class ScriptManager {
   }
 
   fixedUpdate(fixedDt) {
-    this.updateOrder.forEach(script => {
+    [...this.updateOrder].forEach(script => {
       if (script.isRunning && script.onFixedUpdate) {
         script.onFixedUpdate(fixedDt);
       }
@@ -166,7 +167,7 @@ class ScriptManager {
   }
 
   broadcastMessage(methodName, param = null) {
-    this.scripts.forEach(script => {
+    [...this.scripts].forEach(script => {
       if (script[methodName] && typeof script[methodName] === 'function') {
         script[methodName](param);
       }

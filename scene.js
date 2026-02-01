@@ -42,6 +42,12 @@ class TIGEN_Scene extends THREE.Scene {
       this.entities.push(entity);
       this.entityMap.set(entity.id, entity);
       entity.scene = this;
+      
+      // Notify components that scene is available
+      // This ensures meshes/lights created before scene insertion get added
+      entity.components.forEach(comp => {
+        if (comp.onEnable) comp.onEnable();
+      });
     }
   }
 

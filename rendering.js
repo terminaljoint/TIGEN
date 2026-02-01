@@ -227,7 +227,8 @@ class AdvancedRenderer {
     try {
       if (typeof THREE.EffectComposer !== 'undefined' && 
           typeof THREE.RenderPass !== 'undefined' &&
-          typeof THREE.ShaderPass !== 'undefined') {
+          typeof THREE.ShaderPass !== 'undefined' &&
+          typeof THREE.Pass !== 'undefined') {
         this.composer = new THREE.EffectComposer(this.renderer);
         this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
         this.setupEffects();

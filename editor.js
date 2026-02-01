@@ -53,10 +53,6 @@ class TIGEN_Editor {
     this.physicsEngine.registerBody(physics);
     this.physicsEngine.registerCollider(collider);
     
-    if (mesh.mesh) {
-      this.scene.add(mesh.mesh);
-    }
-    
     return entity;
   }
 
@@ -153,10 +149,6 @@ class TIGEN_Editor {
     
     this.physicsEngine.registerBody(physics);
     this.physicsEngine.registerCollider(collider);
-    
-    if (mesh.mesh) {
-      this.scene.add(mesh.mesh);
-    }
     
     TIGEN_Outliner.refresh();
   }

@@ -65,6 +65,11 @@ class ParticleSystem extends Component {
   }
 
   emit(count = 1) {
+    // Ensure mesh is in scene
+    if (this.mesh && this.entity.scene && !this.mesh.parent) {
+      this.entity.scene.add(this.mesh);
+    }
+
     const pos = this.entity.transform.getWorldPosition();
 
     for (let i = 0; i < count && this.particles.length < this.maxParticles; i++) {
@@ -84,7 +89,8 @@ class ParticleSystem extends Component {
         age: 0,
         lifetime: this.lifetime + (Math.random() - 0.5) * this.lifetime * 0.2,
         size: this.size + (Math.random() - 0.5) * this.sizeVariance,
-        color: new THREE.Color(this.color)
+        color: new THREE.Color(this.color),
+        alpha: 1.0
       };
 
       if (this.colorVariance > 0) {

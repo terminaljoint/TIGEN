@@ -213,6 +213,11 @@ class Mesh extends Component {
         this.geometry = new THREE.CylinderGeometry(opts.radius, opts.radius, opts.height, 32);
         break;
     }
+
+    if (this.mesh) {
+      if (this.entity.scene) this.entity.scene.remove(this.mesh);
+      this.mesh = null;
+    }
   }
 
   setMaterial(type, options = {}) {
@@ -225,6 +230,11 @@ class Mesh extends Component {
       case 'basic':
         this.material = new THREE.MeshBasicMaterial(opts);
         break;
+    }
+
+    if (this.mesh) {
+      if (this.entity.scene) this.entity.scene.remove(this.mesh);
+      this.mesh = null;
     }
   }
 
@@ -414,7 +424,6 @@ class TIGEN_Renderer {
       const mesh = entity.getComponent(Mesh);
       if (mesh && mesh.mesh) {
         meshes.push(mesh.mesh);
-        this.scene.add(mesh.mesh);
       }
     });
     return meshes;

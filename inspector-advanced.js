@@ -238,6 +238,7 @@ class TIGENOutliner {
 
   refresh() {
     if (!this.scene) return;
+    if (!this.container) this.container = document.getElementById("hierarchy");
     if (!this.container) return;
 
     this.container.innerHTML = '';
