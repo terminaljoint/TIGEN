@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TIGEN v1 | Terminal Game Engine</title>
+  <title>TIGEN v2 | Advanced AAA Game Engine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -12,12 +13,12 @@
 <div class="play-overlay" id="play-ui">
   <div class="dot"></div>
   <b>SANDBOX ACTIVE</b>
-  <span>| WASD Move | Shift Sprint | Space Jump | Esc Exit</span>
+  <span>| WASD Move | Q/E Up/Down | Shift Sprint | F12 Debug | Delete Entity</span>
 </div>
 
 <div class="layout">
   <header>
-    <div class="logo">TIGEN <span>v1</span></div>
+    <div class="logo">TIGEN <span>v2</span></div>
     <button class="play-btn" id="play-btn">ENTER GAMEWORLD</button>
     <div>
       <span class="autosave">AUTO-SAVE: ON</span>
@@ -39,15 +40,34 @@
   </aside>
 </div>
 
-<!-- THREE -->
+<!-- THREE.JS & Extensions -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.145/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/controls/TransformControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.145/examples/js/postprocessing/BloomPass.js"></script>
 
-<!-- TIGEN CORE -->
-<script src="renderer.js"></script>
+<!-- TIGEN CORE ENGINE -->
+<script src="ecs.js"></script>
+<script src="physics.js"></script>
+<script src="rendering.js"></script>
+<script src="assets.js"></script>
+<script src="particles.js"></script>
+<script src="animation.js"></script>
+<script src="audio.js"></script>
+<script src="scripting.js"></script>
+<script src="scene.js"></script>
+<script src="debug.js"></script>
+<script src="inspector-advanced.js"></script>
 <script src="input.js"></script>
+<script src="loop.js"></script>
+<script src="editor.js"></script>
+<script src="main.js"></script>
+
+</body>
+</html>
 <script src="inspector.js"></script>
 <script src="editor.js"></script>
 <script src="loop.js"></script>
