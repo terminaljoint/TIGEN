@@ -184,6 +184,18 @@ class Mesh extends Component {
     this.material = null;
   }
 
+  onEnable() {
+    if (this.mesh && this.entity.scene) {
+      this.entity.scene.add(this.mesh);
+    }
+  }
+
+  onDisable() {
+    if (this.mesh && this.entity.scene) {
+      this.entity.scene.remove(this.mesh);
+    }
+  }
+
   setGeometry(type, options = {}) {
     const opts = { width: 1, height: 1, depth: 1, radius: 1, ...options };
     
@@ -223,6 +235,9 @@ class Mesh extends Component {
         this.mesh.userData.entity = this.entity;
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
+        if (this.entity.scene && this.enabled) {
+          this.entity.scene.add(this.mesh);
+        }
       }
     }
     
@@ -245,6 +260,12 @@ class Light extends Component {
   onEnable() {
     if (this.entity.scene) {
       this.entity.scene.add(this.light);
+    }
+  }
+
+  onDisable() {
+    if (this.light && this.entity.scene) {
+      this.entity.scene.remove(this.light);
     }
   }
 
@@ -369,7 +390,7 @@ class TIGEN_Renderer {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setSize(viewport.clientWidth, viewport.clientHeight);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFShadowShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     viewport.appendChild(this.renderer.domElement);
 
     window.addEventListener('resize', () => this.onWindowResize());

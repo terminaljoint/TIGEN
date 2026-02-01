@@ -33,6 +33,7 @@ class TIGEN_Scene extends THREE.Scene {
     const entity = new Entity(name);
     this.entities.push(entity);
     this.entityMap.set(entity.id, entity);
+    entity.scene = this;
     return entity;
   }
 
@@ -40,6 +41,7 @@ class TIGEN_Scene extends THREE.Scene {
     if (!this.entities.includes(entity)) {
       this.entities.push(entity);
       this.entityMap.set(entity.id, entity);
+      entity.scene = this;
     }
   }
 

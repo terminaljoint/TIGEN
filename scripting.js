@@ -9,6 +9,14 @@ class Script extends Component {
     this.isRunning = true;
   }
 
+  onEnable() {
+    TIGEN_ScriptManager.addScript(this);
+  }
+
+  onDisable() {
+    TIGEN_ScriptManager.removeScript(this);
+  }
+
   onStart() {} // Called on first frame
   onUpdate(dt) {} // Called every frame
   onLateUpdate(dt) {} // Called after all updates
@@ -16,7 +24,9 @@ class Script extends Component {
   onCollisionEnter(other) {} // Collision started
   onCollisionStay(other) {} // Collision ongoing
   onCollisionExit(other) {} // Collision ended
-  onDestroy() {} // Called on script removal
+  onDestroy() {
+    TIGEN_ScriptManager.removeScript(this);
+  } // Called on script removal
 }
 
 // Built-in scripts
@@ -128,7 +138,6 @@ class ScriptManager {
       this.scripts.splice(idx, 1);
       const orderIdx = this.updateOrder.indexOf(script);
       if (orderIdx > -1) this.updateOrder.splice(orderIdx, 1);
-      if (script.onDestroy) script.onDestroy();
     }
   }
 

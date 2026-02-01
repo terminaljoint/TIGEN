@@ -12,6 +12,18 @@ class Mesh extends Component {
     this.receiveShadow = true;
   }
 
+  onEnable() {
+    if (this.mesh && this.entity.scene) {
+      this.entity.scene.add(this.mesh);
+    }
+  }
+
+  onDisable() {
+    if (this.mesh && this.entity.scene) {
+      this.entity.scene.remove(this.mesh);
+    }
+  }
+
   setGeometry(geometryType, params = {}) {
     let geom;
     switch (geometryType) {
@@ -66,8 +78,10 @@ class Mesh extends Component {
   }
 
   updateMesh() {
-    if (this.mesh && this.entity.transform.entity.scene) {
-      this.entity.transform.entity.scene.remove(this.mesh);
+    const scene = this.entity.scene;
+    
+    if (this.mesh && scene) {
+      scene.remove(this.mesh);
     }
 
     if (this.geometry && this.material) {
@@ -75,7 +89,10 @@ class Mesh extends Component {
       this.mesh.userData.entity = this.entity;
       this.mesh.castShadow = this.castShadow;
       this.mesh.receiveShadow = this.receiveShadow;
-      // Will be added to scene by the engine
+      
+      if (scene && this.enabled) {
+        scene.add(this.mesh);
+      }
     }
   }
 
@@ -86,6 +103,14 @@ class Mesh extends Component {
       castShadow: this.castShadow,
       receiveShadow: this.receiveShadow
     };
+  }
+
+  update(dt) {
+    if (this.mesh) {
+      this.mesh.position.copy(this.entity.transform.position);
+      this.mesh.rotation.copy(this.entity.transform.rotation);
+      this.mesh.scale.copy(this.entity.transform.scale);
+    }
   }
 }
 
@@ -128,6 +153,12 @@ class Light extends Component {
     this.createLight();
   }
 
+  onDestroy() {
+    if (this.light && this.entity.scene) {
+      this.entity.scene.remove(this.light);
+    }
+  }
+
   toJSON() {
     return {
       type: this.type,
@@ -136,6 +167,12 @@ class Light extends Component {
       range: this.range,
       castShadow: this.castShadow
     };
+  }
+
+  update(dt) {
+    if (this.light) {
+      this.light.position.copy(this.entity.transform.position);
+    }
   }
 }
 
@@ -178,7 +215,7 @@ class AdvancedRenderer {
     this.renderer.setSize(viewport.clientWidth, viewport.clientHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFShadowShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1;

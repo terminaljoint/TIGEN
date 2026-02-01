@@ -27,6 +27,18 @@ class ParticleSystem extends Component {
     this.initializeParticleSystem();
   }
 
+  onEnable() {
+    if (this.mesh && this.entity.scene) {
+      this.entity.scene.add(this.mesh);
+    }
+  }
+
+  onDisable() {
+    if (this.mesh && this.entity.scene) {
+      this.entity.scene.remove(this.mesh);
+    }
+  }
+
   initializeParticleSystem() {
     this.geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(this.maxParticles * 3);
@@ -46,6 +58,10 @@ class ParticleSystem extends Component {
     });
 
     this.mesh = new THREE.Points(this.geometry, this.material);
+    
+    if (this.entity.scene && this.enabled) {
+      this.entity.scene.add(this.mesh);
+    }
   }
 
   emit(count = 1) {
@@ -149,6 +165,10 @@ class ParticleSystem extends Component {
   clear() {
     this.particles = [];
     this.updateGeometry();
+  }
+
+  onDestroy() {
+    this.onDisable();
   }
 
   toJSON() {

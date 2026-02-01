@@ -23,7 +23,7 @@ class AudioSource extends Component {
 
   async loadAudio(url) {
     if (!this.audioContext) {
-      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      this.audioContext = TIGEN_AudioManager.getContext();
     }
 
     try {
@@ -56,11 +56,11 @@ class AudioSource extends Component {
       this.source.connect(this.gainNode);
       this.gainNode.connect(this.panner);
       this.panner.connect(this.analyser);
-      this.analyser.connect(this.audioContext.destination);
+      this.analyser.connect(TIGEN_AudioManager.masterGain);
     } else {
       this.source.connect(this.gainNode);
       this.gainNode.connect(this.analyser);
-      this.analyser.connect(this.audioContext.destination);
+      this.analyser.connect(TIGEN_AudioManager.masterGain);
     }
 
     this.source.loop = this.loop;
@@ -76,6 +76,7 @@ class AudioSource extends Component {
     this.initializeNodes();
     this.source.start(0);
     this.isPlaying = true;
+    TIGEN_AudioManager.registerSource(this);
   }
 
   stop() {
@@ -85,6 +86,7 @@ class AudioSource extends Component {
       } catch (e) {}
       this.source = null;
       this.isPlaying = false;
+      TIGEN_AudioManager.unregisterSource(this);
     }
   }
 
@@ -146,6 +148,16 @@ class AudioManager {
   setMasterVolume(value) {
     this.masterVolume = Math.max(0, Math.min(1, value));
     this.masterGain.gain.value = this.masterVolume;
+  }
+
+  registerSource(source) {
+    if (!this.sources.includes(source)) {
+      this.sources.push(source);
+    }
+  }
+
+  unregisterSource(source) {
+    this.sources = this.sources.filter(s => s !== source);
   }
 
   getMasterVolume() {
