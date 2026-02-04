@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TIGEN - AAA Editor</title>
+  <title>TIDGE - Terminal joint Intelligence Development Game Engine Editor</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; font-family: 'Monaco', monospace; background: #0a0b0d; color: #ececed; overflow: hidden; }
@@ -161,7 +161,7 @@
 <body>
   <div class="layout">
     <div class="header">
-      <div class="title">🎮 TIGEN - AAA Editor</div>
+      <div class="title">🎮 TIDGE - Terminal joint Intelligence Development Game Engine Editor</div>
       <div class="stats">
         <div class="stat">Entities: <span id="entityCount">0</span></div>
         <div class="stat">FPS: <span id="fpsCount">0</span></div>
@@ -472,12 +472,12 @@
     // ===== SAVE/LOAD =====
     function editorSave() {
       const data = scene.serialize();
-      localStorage.setItem('tigen_scene', JSON.stringify(data));
+      localStorage.setItem('tidge_scene', JSON.stringify(data));
       log('Scene saved ✓', 'success');
     }
 
     function editorLoad() {
-      const data = localStorage.getItem('tigen_scene');
+      const data = localStorage.getItem('tidge_scene');
       if (data) {
         scene.deserialize(JSON.parse(data));
         updateUI();

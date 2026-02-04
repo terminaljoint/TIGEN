@@ -1,5 +1,5 @@
 /**
- * TIGEN - AAA PROFESSIONAL GAME ENGINE
+ * TIDGE - TERMINAL JOINT INTELLIGENCE DEVELOPMENT GAME ENGINE
  * Production-ready, fully working
  * Completely functional - viewport rendering, animation, assets, editing
  */
